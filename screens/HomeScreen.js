@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
-import FancyPlayer from "../components/FancyPlayer";
-import { SearchBar } from "react-native-elements";
+
 import { TextInput } from "react-native";
 
 export default class HomeScreen extends Component {
@@ -19,12 +18,17 @@ export default class HomeScreen extends Component {
     this.setState({ search });
   };
 
+  handleSearch() {
+    this.navigation.navigate("Gallery", {
+      search: this.state.search,
+    });
+  }
+
   render() {
     const { search } = this.state;
 
     return (
       <View style={styles.container}>
-        <FancyPlayer />
         <View style={styles.Header}>
           <Text style={[styles.Text, styles.headerText]}>
             Welcome to the Art Gallery
@@ -32,23 +36,22 @@ export default class HomeScreen extends Component {
           <Text style={styles.Text}>The fanciest app on the play store.</Text>
         </View>
         <View style={styles.Content}>
-          <View style={{ paddingBottom: 20 }}>
+          <View style={{ paddingBottom: 20, paddingTop: 40 }}>
             <TextInput
               style={styles.TextInput}
               placeholderTextColor="black"
               backgroundColor="white"
               placeholder="Search the collection"
               onChangeText={this.updateSearch}
-              onSubmitEditing={() => {
-                this.navigation.navigate("Details");
-              }}
+              onSubmitEditing={this.handleSearch.bind(this)}
               value={search}
             ></TextInput>
+            <Button title="search" onPress={this.handleSearch.bind(this)} />
           </View>
           <View>
             <Button
               onPress={() => {
-                this.navigation.navigate("Details");
+                this.navigation.navigate("Gallery");
               }}
               color="red"
               title="Random art"
