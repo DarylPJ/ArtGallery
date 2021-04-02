@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableNativeFeedback } from "react-native";
+import { View } from "react-native";
 import { Audio } from "expo-av";
 
 class FancyPlayer extends Component {
