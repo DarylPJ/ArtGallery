@@ -51,22 +51,13 @@ export default class ArtWork extends Component {
       return null;
     }
 
-    console.log(this.state.currentArtData.objectID);
-
-    if (
-      !this.state.currentArtData.artistDisplayName ||
-      this.state.currentArtData.artistDisplayName == ""
-    ) {
-      this.state.currentArtData.artistDisplayName = "unknown";
-    }
-
     return (
       <View>
         <Text style={styles.Text}>
           Title: {this.state.currentArtData.title}
         </Text>
         <Text style={[styles.Text, { paddingBottom: 20 }]}>
-          Artist: {this.state.currentArtData.artistDisplayName}
+          Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
         </Text>
         <Image
           style={styles.Image}
