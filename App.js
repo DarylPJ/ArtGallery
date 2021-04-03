@@ -59,8 +59,12 @@ export default class App extends Component {
 
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home" headerMode="none">
-          <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Gallery" component={GalleryScreen} />
         </Stack.Navigator>
       </NavigationContainer>

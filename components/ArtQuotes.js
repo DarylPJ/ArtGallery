@@ -1,14 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
 import { Text } from "react-native";
 
-export default class ArtQuotes extends Component {
-  render() {
-    return (
-      <Text style={this.props.style}>
-        {artQuotes[Math.floor(Math.random() * artQuotes.length)]}
-      </Text>
-    );
-  }
+export default function ArtQuotes(props) {
+  return (
+    <Text style={props.style}>
+      {artQuotes[Math.floor(Math.random() * artQuotes.length)]}
+    </Text>
+  );
 }
 
 const artQuotes = [

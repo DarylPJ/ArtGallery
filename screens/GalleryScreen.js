@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import ArtQuotes from "../components/ArtQuotes";
+import ArtWork from "../components/ArtWork";
 
 export default class GalleryScreen extends Component {
   state = {
@@ -17,7 +18,7 @@ export default class GalleryScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.ImageContainer}>
-          <Text style={{ backgroundColor: "white" }}>{this.state.search}</Text>
+          <ArtWork search={this.state.search} />
         </View>
         <View style={styles.ArtQuotesContainer}>
           <ArtQuotes style={styles.ArtQuotes} />
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   ImageContainer: {
-    flex: 1,
+    flex: 5,
     paddingTop: 25,
     justifyContent: "center",
   },
