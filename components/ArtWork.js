@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { Animated, Text, Dimensions, View, StyleSheet } from "react-native";
-import { PinchGestureHandler, State } from "react-native-gesture-handler";
+import {
+  PinchGestureHandler,
+  PanGestureHandler,
+  State,
+} from "react-native-gesture-handler";
 
 const searchUri =
   "https://collectionapi.metmuseum.org/public/collection/v1/search";
@@ -9,6 +13,7 @@ const detailsUri =
 
 export default class ArtWork extends Component {
   scale = new Animated.Value(1);
+  translateX = new Animated.Value(0);
   state = {};
 
   constructor() {
@@ -48,12 +53,12 @@ export default class ArtWork extends Component {
     this.setState({ currentArtData: data });
   }
 
-  onPinchEvent = Animated.event(
-    [
-      {
-        nativeEvent: { scale: this.scale },
-      },
-    ],
+  onPinchEvent = Animated.event([{ nativeEvent: { scale: this.scale } }], {
+    useNativeDriver: true,
+  });
+
+  onPanEvent = Animated.event(
+    [{ nativeEvent: { translationX: this.translateX } }],
     {
       useNativeDriver: true,
     }
@@ -65,6 +70,12 @@ export default class ArtWork extends Component {
         toValue: 1,
         useNativeDriver: true,
       }).start();
+    }
+  };
+
+  onPanStatChange = (event) => {
+    if (Math.abs(event.nativeEvent.velocityX) > 1000) {
+      //Change image
     }
   };
 
@@ -81,24 +92,36 @@ export default class ArtWork extends Component {
         <Text style={[styles.Text, { paddingBottom: 20 }]}>
           Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
         </Text>
-        <PinchGestureHandler
-          onGestureEvent={this.onPinchEvent}
-          onHandlerStateChange={this.onPinchStateChange}
+        <PanGestureHandler
+          onGestureEvent={this.onPanEvent}
+          onHandlerStateChange={this.onPanStatChange}
         >
-          <Animated.Image
-            style={[
-              styles.Image,
-              {
-                transform: [{ scale: this.scale }],
-              },
-            ]}
-            source={{
-              uri:
-                this.state.currentArtData.primaryImageSmall ??
-                this.state.currentArtData.primaryImage,
-            }}
-          ></Animated.Image>
-        </PinchGestureHandler>
+          <Animated.View>
+            <PinchGestureHandler
+              onGestureEvent={this.onPinchEvent}
+              onHandlerStateChange={this.onPinchStateChange}
+            >
+              <Animated.Image
+                style={[
+                  styles.Image,
+                  {
+                    transform: [
+                      { scale: this.scale },
+                      {
+                        translateX: this.translateX,
+                      },
+                    ],
+                  },
+                ]}
+                source={{
+                  uri:
+                    this.state.currentArtData.primaryImageSmall ??
+                    this.state.currentArtData.primaryImage,
+                }}
+              ></Animated.Image>
+            </PinchGestureHandler>
+          </Animated.View>
+        </PanGestureHandler>
       </View>
     );
   }
