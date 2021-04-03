@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Text, Image, Dimensions, View, StyleSheet } from "react-native";
+import { Animated, Text, Dimensions, View, StyleSheet } from "react-native";
+import { PinchGestureHandler, State } from "react-native-gesture-handler";
 
 const searchUri =
   "https://collectionapi.metmuseum.org/public/collection/v1/search";
@@ -7,6 +8,7 @@ const detailsUri =
   "https://collectionapi.metmuseum.org/public/collection/v1/objects/";
 
 export default class ArtWork extends Component {
+  scale = new Animated.Value(1);
   state = {};
 
   constructor() {
@@ -46,6 +48,26 @@ export default class ArtWork extends Component {
     this.setState({ currentArtData: data });
   }
 
+  onPinchEvent = Animated.event(
+    [
+      {
+        nativeEvent: { scale: this.scale },
+      },
+    ],
+    {
+      useNativeDriver: true,
+    }
+  );
+
+  onPinchStateChange = (event) => {
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      Animated.spring(this.scale, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
   render() {
     if (!this.state.currentArtData) {
       return null;
@@ -59,14 +81,24 @@ export default class ArtWork extends Component {
         <Text style={[styles.Text, { paddingBottom: 20 }]}>
           Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
         </Text>
-        <Image
-          style={styles.Image}
-          source={{
-            uri:
-              this.state.currentArtData.primaryImageSmall ??
-              this.state.currentArtData.primaryImage,
-          }}
-        ></Image>
+        <PinchGestureHandler
+          onGestureEvent={this.onPinchEvent}
+          onHandlerStateChange={this.onPinchStateChange}
+        >
+          <Animated.Image
+            style={[
+              styles.Image,
+              {
+                transform: [{ scale: this.scale }],
+              },
+            ]}
+            source={{
+              uri:
+                this.state.currentArtData.primaryImageSmall ??
+                this.state.currentArtData.primaryImage,
+            }}
+          ></Animated.Image>
+        </PinchGestureHandler>
       </View>
     );
   }
@@ -75,7 +107,6 @@ export default class ArtWork extends Component {
 const styles = StyleSheet.create({
   Image: {
     width: Dimensions.get("window").width,
-    height: undefined,
     aspectRatio: 1,
     resizeMode: "contain",
   },
