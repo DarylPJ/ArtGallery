@@ -46,13 +46,17 @@ export default class HomeScreen extends Component {
               onSubmitEditing={this.handleSearch.bind(this)}
               value={search}
             ></TextInput>
-            <Button title="search" onPress={this.handleSearch.bind(this)} />
+            <Button
+              title="search"
+              onPress={this.handleSearch.bind(this)}
+              disabled={!this.state.search}
+            />
           </View>
           <View>
             <Button
               onPress={() => {
                 this.navigation.navigate("Gallery", {
-                  search: "",
+                  search: "a and the",
                 });
               }}
               color="red"

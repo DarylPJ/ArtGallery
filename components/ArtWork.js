@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Animated, Text, Dimensions, View, StyleSheet } from "react-native";
+import {
+  Animated,
+  Button,
+  Text,
+  Dimensions,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import {
   PinchGestureHandler,
   PanGestureHandler,
@@ -84,37 +92,67 @@ export default class ArtWork extends Component {
   onPanStatChange = (event) => {
     const percentageMoved =
       Math.abs(event.nativeEvent.translationX) / Dimensions.get("window").width;
-    console.log(percentageMoved);
-    console.log(event.nativeEvent.velocityX);
     if (
       (Math.abs(event.nativeEvent.velocityX) > 1000 && percentageMoved > 0.1) ||
       (percentageMoved > 0.75 && this.pageLastChanged < Date.now() - 1000)
     ) {
-      this.pageLastChanged = Date.now();
-      let nextItem = this.state.workIndex + 1;
-      if (nextItem === this.state.workIds.length) {
-        nextItem = 0;
+      if (
+        event.nativeEvent.velocityX > 0 &&
+        event.nativeEvent.translationX > 0
+      ) {
+        this.previousPage();
+        return;
       }
 
-      this.setState({
-        workIndex: nextItem,
-      });
+      if (
+        event.nativeEvent.velocityX < 0 &&
+        event.nativeEvent.translationX < 0
+      ) {
+        this.nextPage();
+        return;
+      }
     }
+  };
+
+  previousPage = () => {
+    this.pageLastChanged = Date.now();
+    let previousItem = this.state.workIndex - 1;
+    if (previousItem < 0) {
+      previousItem = 0;
+    }
+
+    this.setState({
+      workIndex: previousItem,
+    });
+  };
+
+  nextPage = () => {
+    this.pageLastChanged = Date.now();
+    let nextItem = this.state.workIndex + 1;
+    if (nextItem === this.state.workIds.length) {
+      nextItem = 0;
+    }
+
+    this.setState({
+      workIndex: nextItem,
+    });
   };
 
   render() {
     if (!this.state.currentArtData) {
-      return null;
+      return <ActivityIndicator size="large" color="gold"></ActivityIndicator>;
     }
 
     return (
-      <View>
-        <Text style={styles.Text}>
-          Title: {this.state.currentArtData.title}
-        </Text>
-        <Text style={[styles.Text, { paddingBottom: 20 }]}>
-          Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
-        </Text>
+      <View style={styles.Container}>
+        <View>
+          <Text style={styles.Text}>
+            Title: {this.state.currentArtData.title}
+          </Text>
+          <Text style={[styles.Text, { paddingBottom: 20 }]}>
+            Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
+          </Text>
+        </View>
         <PanGestureHandler
           onGestureEvent={this.onPanEvent}
           onHandlerStateChange={this.onPanStatChange}
@@ -145,15 +183,31 @@ export default class ArtWork extends Component {
             </PinchGestureHandler>
           </Animated.View>
         </PanGestureHandler>
-        <Text style={styles.Text}>
-          Showing {this.state.workIndex + 1} of {this.state.workIds.length}
-        </Text>
+        <View style={styles.InfoContainer}>
+          <Button
+            title="previous"
+            onPress={this.previousPage}
+            disabled={this.state.workIndex === 0}
+          ></Button>
+          <Text style={styles.Text}>
+            Showing {this.state.workIndex + 1} of {this.state.workIds.length}
+          </Text>
+          <Button
+            title="next"
+            onPress={this.nextPage}
+            disabled={this.state.workIndex === this.state.workIds.length - 1}
+          ></Button>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  Container: {
+    justifyContent: "space-between",
+    flex: 1,
+  },
   Image: {
     width: Dimensions.get("window").width,
     aspectRatio: 1,
@@ -162,5 +216,11 @@ const styles = StyleSheet.create({
   Text: {
     color: "white",
     fontSize: 15,
+  },
+  InfoContainer: {
+    width: Dimensions.get("window").width,
+    height: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
