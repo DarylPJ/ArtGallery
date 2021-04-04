@@ -146,10 +146,10 @@ export default class ArtWork extends Component {
     return (
       <View style={styles.Container}>
         <View>
-          <Text style={styles.Text}>
+          <Text numberOfLines={3} style={styles.Text}>
             Title: {this.state.currentArtData.title}
           </Text>
-          <Text style={[styles.Text, { paddingBottom: 20 }]}>
+          <Text numberOfLines={2} style={[styles.Text, { paddingBottom: 20 }]}>
             Artist: {this.state.currentArtData.artistDisplayName || "unknown"}
           </Text>
         </View>
