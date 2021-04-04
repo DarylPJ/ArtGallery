@@ -6,6 +6,7 @@ import HomeScreen from "./screens/HomeScreen";
 import GalleryScreen from "./screens/GalleryScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import * as Font from "expo-font";
 
 const Stack = createStackNavigator();
 
@@ -20,14 +21,26 @@ export default class App extends Component {
 
   state = {
     audioLoaded: false,
+    fontLoaded: false,
   };
 
   componentDidMount() {
     this.loadAudio();
+    this.loadfont();
   }
 
   componentWillUnmount() {
     this.soundObject.stopAsync();
+  }
+
+  async loadfont() {
+    Font.loadAsync({
+      "Beyond-Wonderland": require("./assets/fonts/Beyond-Wonderland.ttf"),
+    });
+
+    this.setState({
+      fontLoaded: true,
+    });
   }
 
   async loadAudio() {
@@ -48,12 +61,13 @@ export default class App extends Component {
       this.setState({
         audioLoaded: true,
       });
-      this.state.audioLoaded = true;
+
+      this.setState({ audioLoaded: true });
     }
   }
 
   render() {
-    if (!this.state.audioLoaded) {
+    if (!this.state.audioLoaded || !this.state.fontLoaded) {
       return null;
     }
 

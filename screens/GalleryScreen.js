@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   },
   ArtQuotes: {
     color: "gold",
-    fontSize: 20,
     textAlign: "center",
+    fontSize: 21,
+    fontFamily: "Beyond-Wonderland",
   },
 });

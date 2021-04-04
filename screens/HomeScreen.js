@@ -94,14 +94,16 @@ const styles = StyleSheet.create({
   Text: {
     color: "gold",
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 24,
+    fontFamily: "Beyond-Wonderland",
   },
   headerText: {
-    fontSize: 35,
+    fontSize: 45,
   },
   RecognitionText: {
     color: "white",
     fontSize: 12,
+    fontFamily: "normal",
   },
   TextInput: {
     height: 40,
