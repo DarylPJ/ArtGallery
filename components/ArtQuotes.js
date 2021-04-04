@@ -22,7 +22,7 @@ const artQuotes = [
   "'Art washes away from the soul the dust of everyday life.' – Pablo Picasso",
   "'Color is my day-long obsession, joy and torment.' – Claude Monet",
   "'I found I could say things with color and shapes that I couldn’t say any other way – things I had no words for.' – Georgia O’Keeffe",
-  "'I hold that the perfection of form and beauty is contained in the sum of all men.' – Albrecht Dürer",
+  "'I hold that the perfection of form and beauty is contained in the sum of all men.' – Albrecht Durer",
   "'Art is not what you see, but what you make others see.' – Edgar Degas",
   "'In art, what we want is the certainty that one spark of original genius shall not be extinguished.' – Mary Cassatt",
   "'A work of art which isn’t based on feeling isn’t art at all.' – Paul Cézanne",

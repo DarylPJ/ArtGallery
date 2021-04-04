@@ -27,8 +27,8 @@ export default class ArtWork extends Component {
       return;
     }
 
-    if (this.state.workIds && prevState.workIds != this.state.workIds) {
-      await this.GetArtWork(this.state.workIds[0]);
+    if (this.state.workIds && prevState.workIndex !== this.state.workIndex) {
+      await this.GetArtWork(this.state.workIds[this.state.workIndex]);
     }
   }
 
@@ -39,7 +39,10 @@ export default class ArtWork extends Component {
     );
     const data = await response.json();
 
-    this.setState({ workIds: data.objectIDs.sort(() => Math.random() - 0.5) });
+    this.setState({
+      workIds: data.objectIDs.sort(() => Math.random() - 0.5),
+      workIndex: 0,
+    });
   }
 
   async componentWillUnmount() {
@@ -49,8 +52,12 @@ export default class ArtWork extends Component {
   async GetArtWork(id) {
     const response = await fetch(`${detailsUri}${id}`);
     const data = await response.json();
-
     this.setState({ currentArtData: data });
+
+    Animated.spring(this.translateX, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
   }
 
   onPinchEvent = Animated.event([{ nativeEvent: { scale: this.scale } }], {
@@ -73,9 +80,25 @@ export default class ArtWork extends Component {
     }
   };
 
+  pageLastChanged = Date.now();
   onPanStatChange = (event) => {
-    if (Math.abs(event.nativeEvent.velocityX) > 1000) {
-      //Change image
+    const percentageMoved =
+      Math.abs(event.nativeEvent.translationX) / Dimensions.get("window").width;
+    console.log(percentageMoved);
+    console.log(event.nativeEvent.velocityX);
+    if (
+      (Math.abs(event.nativeEvent.velocityX) > 1000 && percentageMoved > 0.1) ||
+      (percentageMoved > 0.75 && this.pageLastChanged < Date.now() - 1000)
+    ) {
+      this.pageLastChanged = Date.now();
+      let nextItem = this.state.workIndex + 1;
+      if (nextItem === this.state.workIds.length) {
+        nextItem = 0;
+      }
+
+      this.setState({
+        workIndex: nextItem,
+      });
     }
   };
 
@@ -122,6 +145,9 @@ export default class ArtWork extends Component {
             </PinchGestureHandler>
           </Animated.View>
         </PanGestureHandler>
+        <Text style={styles.Text}>
+          Showing {this.state.workIndex + 1} of {this.state.workIds.length}
+        </Text>
       </View>
     );
   }
