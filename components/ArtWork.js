@@ -60,6 +60,7 @@ export default class ArtWork extends Component {
   async GetArtWork(id) {
     const response = await fetch(`${detailsUri}${id}`);
     const data = await response.json();
+
     this.setState({ currentArtData: data });
 
     Animated.spring(this.translateX, {

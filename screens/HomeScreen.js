@@ -56,7 +56,7 @@ export default class HomeScreen extends Component {
             <Button
               onPress={() => {
                 this.navigation.navigate("Gallery", {
-                  search: "a and the",
+                  search: "art paint the",
                 });
               }}
               color="red"
