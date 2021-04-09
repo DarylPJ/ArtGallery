@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  Alert,
   Animated,
   Button,
   Text,
@@ -35,22 +36,41 @@ export default class ArtWork extends Component {
       return;
     }
 
-    if (this.state.workIds && prevState.workIndex !== this.state.workIndex) {
+    if (
+      this.state.workIds &&
+      this.state.workIds.length !== 0 &&
+      prevState.workIndex !== this.state.workIndex
+    ) {
       await this.GetArtWork(this.state.workIds[this.state.workIndex]);
     }
   }
 
   async componentDidMount() {
     this._isMounted = true;
-    const response = await fetch(
-      `${searchUri}?q=${this.props.search}&hasImages=true`
-    );
+    let response;
+    try {
+      response = await fetch(
+        `${searchUri}?q=${this.props.search}&hasImages=true`
+      );
+    } catch {
+      Alert.alert(
+        "Error getting art work",
+        "Ensure you are connected to the internet and try again."
+      );
+    }
     const data = await response.json();
 
-    this.setState({
-      workIds: data.objectIDs.sort(() => Math.random() - 0.5),
-      workIndex: 0,
-    });
+    if (data.objectIDs) {
+      this.setState({
+        workIds: data.objectIDs.sort(() => Math.random() - 0.5),
+        workIndex: 0,
+      });
+    } else {
+      this.setState({
+        workIds: [],
+        workIndex: 0,
+      });
+    }
   }
 
   async componentWillUnmount() {
@@ -58,7 +78,16 @@ export default class ArtWork extends Component {
   }
 
   async GetArtWork(id) {
-    const response = await fetch(`${detailsUri}${id}`);
+    let response;
+    try {
+      response = await fetch(`${detailsUri}${id}`);
+    } catch {
+      Alert.alert(
+        "Error getting art work",
+        "Ensure you are connected to the internet and try again."
+      );
+    }
+
     const data = await response.json();
 
     this.setState({ currentArtData: data });
@@ -140,6 +169,16 @@ export default class ArtWork extends Component {
   };
 
   render() {
+    if (this.state.workIds && this.state.workIds.length == 0) {
+      return (
+        <View style={styles.Container}>
+          <Text style={styles.Text}>
+            No Results found for search "{this.props.search}"
+          </Text>
+        </View>
+      );
+    }
+
     if (!this.state.currentArtData) {
       return <ActivityIndicator size="large" color="gold"></ActivityIndicator>;
     }
