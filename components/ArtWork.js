@@ -173,7 +173,7 @@ export default class ArtWork extends Component {
       return (
         <View style={styles.Container}>
           <Text style={styles.Text}>
-            No Results found for search "{this.props.search}"
+            No results found for search "{this.props.search}"
           </Text>
         </View>
       );
